@@ -1,6 +1,6 @@
 import csv
+import time
 
-# Algorithme pour maximiser nos bénéfices
 # Solution force brute - Recherche de toutes les solutions
 
 # Cas d'un hear recursion (et non tail recursion). Les éléments produits par la recursivité
@@ -43,13 +43,18 @@ def result():
     print(len(combinaisons))
 
 #----------------------------------------------
-# ele = [('Action-1', 20, 1), ('Action-2', 30, 3), ('Action-3', 50, 7.5), ('Action-4', 70, 14)]
-with open('datas/liste_actions.csv') as fichier_csv:
-   reader = csv.DictReader(fichier_csv, delimiter=',')
-   ele = []
-   for ligne in reader:
-        ele.append((ligne['name'], float(ligne['price']), round(float(ligne['price'])*(float(ligne['profit'])/100),2)))
+def main():
+    start_time = time.time()
+    # ele = [('Action-1', 20, 1), ('Action-2', 30, 3), ('Action-3', 50, 7.5), ('Action-4', 70, 14)]
+    with open('datas/liste_actions.csv') as fichier_csv:
+        reader = csv.DictReader(fichier_csv, delimiter=',')
+        ele = []
+        for ligne in reader:
+            ele.append((ligne['name'], float(ligne['price']), round(float(ligne['price'])*(float(ligne['profit'])/100),2)))
 
-print(sacADos_force_brute(500, ele))
-#result()
+    print(sacADos_force_brute(500, ele))
+    # result()
+    print("--- %s secondes ---" % (time.time() - start_time))
 
+if __name__ == "__main__":
+    main()

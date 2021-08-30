@@ -1,4 +1,6 @@
 import csv
+import time
+
 # bottom up approche
 def zoKnapsackBU(profits, prices, invest_max):
     if invest_max <= 0 or len(profits) == 0 or len(prices) != len(profits):
@@ -41,4 +43,11 @@ with open('datas/dataset1.csv') as fichier_csv:
             profits.append(profit_euros)
             prices.append(int(price)) # conversion en Int car va servir d'index
 
-print(zoKnapsackBU(profits, prices, 500))
+
+def main():
+    start_time = time.time()
+    print(zoKnapsackBU(profits, prices, 500))
+    print("--- %s secondes ---" % ((time.time() - start_time)))
+
+if __name__ == "__main__":
+    main()
