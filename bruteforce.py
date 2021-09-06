@@ -1,59 +1,96 @@
-import csv
 import time
-
-# Solution force brute - Recherche de toutes les solutions
-
-# Cas d'un hear recursion (et non tail recursion). Les éléments produits par la recursivité
-# sont stockés dans la stack memory en attendant d'être appelés.
-# Udemy Recursion, Backtracking and Dynamic Programming in Python
+import csv
 
 
-combinaisons = []
+def binary_code_chart(elements, invest_max):
+    chart_combinations = []
+    number_of_combinations = 2 ** len(elements)
+    valid_combinations = [] # car respecte la limite d'investissement
 
-def sacADos_force_brute(capacite, elements, elements_selection = []):
-    # Utilisation d'une fonction récursive qui nécessite un point d'arrêt
-    # Le pt d'arrêt est est-ce qu'il reste des éléments à traiter, oui, ou non (if elements)
-    if elements:
-        # si il y a toujours des éléments, on rappelle recursivement sacADos
-        # dans 1 cas, on prend en considération l'objet courant (on le met ds le sac), pas dans l'autre cas
-        val1, lstVal1 = sacADos_force_brute(capacite, elements[1:], elements_selection)
-        # elements[1:] prend la liste moins le premier element, et lements_selection n'ajoute rien aux éléments elctionnés
-        # if lstVal1 not in combinaisons:
-        #     combinaisons.append(lstVal1)
+    for i in range(0,number_of_combinations):
+        binary_code = bin(i)[2:]
+        complete_code = '0'*(len(elements)-len(binary_code))+binary_code
+        # pour 3 actions : ['000', '001', '010', '011', '100', '101', '110', '111']
+        chart_combinations.append(complete_code)
+    # Parcourir les combinaisons
+    for combination in chart_combinations:
+        cumul_price = 0
+        for index, value in enumerate(combination):
+            if value == str(1):
+                cumul_price += elements[index][1]
+        # si le cumul des prix des actions associées ne dépasse pas inves max, alors prise en compte
+        if cumul_price <= invest_max and cumul_price > 0:
+            valid_combinations.append(combination)
+            
 
-        # ensuite on prend le premier élément de la liste d'éléments 
-        val = elements[0]
-        # et on vérifie que si on l'ajoute on est bien encore dans les limites de capacité du sac à dos
-        if val[1] <= capacite:
-            # si c'est ok, on rappelle la fonction en lui donnant la capacité moins le poids de l'objet (soit val[1])
-            # on lui passe la liste privée du premier pour dire qu'il a été traité
-            # on ajoute à élément_selection l'objet au complet (nom, poids, valeure) via val
-            val2, lstVal2 = sacADos_force_brute(capacite - val[1], elements[1:], elements_selection + [val])
-            # si val2 est plus favorable, on retourne val2 et listVal2 et inversement
-            if val1 < val2:
-                return val2, lstVal2
+    # pour 3 actions : ['001', '010', '011', '100']
+    return valid_combinations
 
-        return val1, lstVal1
-    # si plus d'éléments dans la liste, on retourne le poids maxi et l'éléments sélectionné
-    else:
-        return round(sum([i[2] for i in elements_selection]),2), elements_selection
 
-def result():
-    print("combinaisons = ", combinaisons)
-    print(len(combinaisons))
+# une fois la liste des combinaisons possibles est établie :
+# - Calcul du prix de la combinaisons
+def combination_invest(selection):
+    total_price = 0
+    for prices in selection:
+        total_price += prices[1]
+    return total_price
+
+
+# - Calcul du profit de la combinaisons
+def combination_profit(selection):
+    total_profit = 0
+    for profits in selection:
+        total_profit += profits[2]
+    return total_profit
+
+
+# Optimisation de la selection
+
+def best_combination(combinations):
+    best_profit = 0
+    total_invest = 0
+    best_solution = []
+    for combination in combinations:
+        invest = combination_invest(combination)
+        profit = combination_profit(combination)
+        if profit > best_profit:
+            best_profit = profit
+            total_invest = invest
+            best_solution = combination
+
+    return best_profit, total_invest, best_solution
+
+# # fonction force brute :
+
+def portfolio_analysis(elements, invest_max):
+    options = []
+    
+    chart = binary_code_chart(elements, invest_max)
+    # Traduction des combinaisons possible binaire en éléments
+    for code in chart:
+        option = []
+        for index, value in enumerate(code):
+            if value == str(1):
+                option.append(elements[index])
+        options.append(option)
+
+    
+    solution = best_combination(options)
+
+    return solution
 
 #----------------------------------------------
 def main():
     start_time = time.time()
-    # ele = [('Action-1', 20, 1), ('Action-2', 30, 3), ('Action-3', 50, 7.5), ('Action-4', 70, 14)]
+    # ele_2 = [('Action-1', 4, 12), ('Action-2', 3, 10), ('Action-3', 2, 6)]
     with open('datas/liste_actions.csv') as fichier_csv:
         reader = csv.DictReader(fichier_csv, delimiter=',')
         ele = []
         for ligne in reader:
             ele.append((ligne['name'], float(ligne['price']), round(float(ligne['price'])*(float(ligne['profit'])/100),2)))
 
-    print(sacADos_force_brute(500, ele))
-    # result()
+    max_profit, max_invest, selection = portfolio_analysis(ele, 500)
+    print(f"Pour un investissement de {max_invest}, profit de {round(max_profit,2)} avec la selection {selection}")
     print("--- %s secondes ---" % (time.time() - start_time))
 
 if __name__ == "__main__":
