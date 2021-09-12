@@ -2,16 +2,16 @@ import csv
 import time
 
 
-
-def sacADos_dynamique(invest_max, portfolio):
-    matrice = [[0 for x in range(invest_max +1)] for x in range(len(portfolio) +1)]
-    for share in range(1, len(portfolio) +1):
-        for invest in range(1, invest_max +1):
+def sac_a_dos_dynamique(invest_max, portfolio):
+    matrice = [[0 for x in range(invest_max + 1)] for x in range(len(portfolio) + 1)]
+    for share in range(1, len(portfolio) + 1):
+        for invest in range(1, invest_max + 1):
             if portfolio[share-1][1] <= invest:
-                matrice[share][invest] = max(portfolio[share-1][2] + matrice[share-1][invest-portfolio[share-1][1]], matrice[share-1][invest])
+                matrice[share][invest] = max(portfolio[share-1][2] + matrice[share-1]
+                                             [invest-portfolio[share-1][1]],
+                                             matrice[share-1][invest])
             else:
                 matrice[share][invest] = matrice[share-1][invest]
-    
 
     # Retrouver les élements en fonction de la somme
     investment = invest_max
@@ -28,7 +28,8 @@ def sacADos_dynamique(invest_max, portfolio):
 
     return matrice[-1][-1], shares_selection
 
-#----------------------------------------------
+
+# ----------------------------------------------
 def main():
     start_time = time.time()
 
@@ -41,8 +42,8 @@ def main():
                 profit = float(ligne['profit'])
                 profit_euros = (profit*price)/100
                 ele.append((ligne['name'], int(price), profit_euros))
-    
-    result = sacADos_dynamique(50000, ele)
+
+    result = sac_a_dos_dynamique(50000, ele)
 
     print(result)
     print("")
@@ -51,8 +52,10 @@ def main():
     for r in result[1]:
         total_investment += r[1]
 
-    print(f"Investissement = {total_investment/100}, profit = {round((result[0]/100), 2)}")
+    print(f"Investissement = {total_investment/100},"
+          f" profit = {round((result[0]/100), 2)}")
     print("--- %s secondes ---" % (time.time() - start_time))
+
 
 if __name__ == "__main__":
     main()
