@@ -2,6 +2,12 @@ import time
 import csv
 
 
+""" Scripte brute de force pour maximiser les profits sur le fichiers
+ liste_actions
+
+"""
+
+
 def binary_code_chart(elements, invest_max):
     chart_combinations = []
     number_of_combinations = 2 ** len(elements)
@@ -27,8 +33,8 @@ def binary_code_chart(elements, invest_max):
     return valid_combinations
 
 
-# une fois la liste des combinaisons possibles est établie :
-# - Calcul du prix de la combinaisons
+# une fois que la liste des combinaisons possibles est établie :
+# - Calcul du prix de la combinaison
 def combination_invest(selection):
     total_price = 0
     for prices in selection:
@@ -36,7 +42,7 @@ def combination_invest(selection):
     return total_price
 
 
-# - Calcul du profit de la combinaisons
+# - Calcul du profit de la combinaison
 def combination_profit(selection):
     total_profit = 0
     for profits in selection:
@@ -66,7 +72,7 @@ def best_combination(combinations):
 def portfolio_analysis(elements, invest_max):
     options = []
     chart = binary_code_chart(elements, invest_max)
-    # Traduction des combinaisons possible binaire en éléments
+    # Traduction des combinaisons possibles binaires en éléments
     for code in chart:
         option = []
         for index, value in enumerate(code):

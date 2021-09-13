@@ -1,6 +1,10 @@
 import csv
 import time
 
+""" Scripte optimisé pour maximiser les profits sur les fichiers dataset1
+et dataset2
+"""
+
 
 def sac_a_dos_dynamique(invest_max, portfolio):
     matrice = [[0 for x in range(invest_max + 1)] for x in range(len(portfolio) + 1)]
@@ -31,11 +35,24 @@ def sac_a_dos_dynamique(invest_max, portfolio):
 
 # ----------------------------------------------
 def main():
-    start_time = time.time()
+    choix = input("Quel fichiers voulez vous optimiser ? \n \
+        Saisissez 1 pour dataset1, 2 pour dataset2 ")
+    if choix == "1":
+        data = 'datas/dataset1.csv'
+        limiter = ';'
+    elif choix == "2":
+        data = 'datas/dataset2.csv'
+        limiter = ','
+        start_time = time.time()
+    else:
+        print("")
+        print("Désolé, seules les réponses 1 ou 2 sont possibles.")
+        exit()
 
+    start_time = time.time()
     ele = []
-    with open('datas/dataset1.csv') as fichier_csv:
-        reader = csv.DictReader(fichier_csv, delimiter=';')
+    with open(data) as fichier_csv:
+        reader = csv.DictReader(fichier_csv, delimiter=limiter)
         for ligne in reader:
             if float(ligne['price']) > 0 and float(ligne['profit']) > 0:
                 price = float(ligne['price'])*100
