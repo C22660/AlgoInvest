@@ -24,7 +24,7 @@ Le problème du sac à dos
 Concept des algorithmes et du BIG O
 
 
-## Techologies
+## Technologie
 Python 3.9
 
 ## Auteur
