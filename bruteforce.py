@@ -9,6 +9,17 @@ import csv
 
 
 def binary_code_chart(elements, invest_max):
+    """A partir de l'ensemble des actiions disponible, va générer l'ensemble des
+    combinaisons possibles et ne conserver que les valides (qui ne dépassent
+    pas l'investissement max.)
+
+    Args:
+        elements (list): Les actions avec nom, prix et profit
+        invest_max (int): Le montant maximum pouvant être investi
+
+    Returns:
+        [list]: La liste des combinaisons valides sous forme binaire
+    """
     chart_combinations = []
     number_of_combinations = 2 ** len(elements)
     valid_combinations = []  # car respecte la limite d'investissement
@@ -36,6 +47,15 @@ def binary_code_chart(elements, invest_max):
 # une fois que la liste des combinaisons possibles est établie :
 # - Calcul du prix de la combinaison
 def combination_invest(selection):
+    """Calcul le prix de la combinaison qui lui est adressée en cumulant
+    chaque prix
+
+    Args:
+        selection (list): combinaison d'actions
+
+    Returns:
+        [type]: Prix total de la combinaison d'actions
+    """
     total_price = 0
     for prices in selection:
         total_price += prices[1]
@@ -44,6 +64,15 @@ def combination_invest(selection):
 
 # - Calcul du profit de la combinaison
 def combination_profit(selection):
+    """Calcul le profit de la combinaison qui lui est adressée en cumulant
+    chaque profit
+
+    Args:
+        selection (list): combinaison d'actions
+
+    Returns:
+        [type]: Profit total de la combinaison d'actions
+    """
     total_profit = 0
     for profits in selection:
         total_profit += profits[2]
@@ -53,6 +82,16 @@ def combination_profit(selection):
 # Optimisation de la selection
 
 def best_combination(combinations):
+    """Cherche meilleure solutions en remplaçant le meilleur profit au fur et
+    à mesure qu'un meilleur profit est trouvé
+
+    Args:
+        combinations (list): ensemble des combinaisons d'acions retenues
+
+    Returns:
+        [float, float, list]: le meilleur profit, le total investi, le détail
+                                de la combinaison
+    """
     best_profit = 0
     total_invest = 0
     best_solution = []
@@ -63,13 +102,24 @@ def best_combination(combinations):
             best_profit = profit
             total_invest = invest
             best_solution = combination
-
     return best_profit, total_invest, best_solution
 
 # # fonction force brute :
 
 
 def portfolio_analysis(elements, invest_max):
+    """Lance l'analyse du portefeuille en appelalnt la fonction qui va générer
+    les combinaisons sous forme binaire, puis en recréant les combinisons sous
+    forme de listes détaillées, puis les adresses à best_cobination pour déterminer
+    la meilleure de toutes
+
+    Args:
+        elements (list): ensemble des actions
+        invest_max (int): montant maximum pouvant être investi
+
+    Returns:
+        [tuple]: le meilleur profit, le total investi, le détail de la combinaison
+    """
     options = []
     chart = binary_code_chart(elements, invest_max)
     # Traduction des combinaisons possibles binaires en éléments
@@ -81,6 +131,7 @@ def portfolio_analysis(elements, invest_max):
         options.append(option)
 
     solution = best_combination(options)
+    print(type(solution), solution)
 
     return solution
 
